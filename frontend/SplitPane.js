@@ -27,7 +27,7 @@ type DefaultProps = {};
 
 type State = {
   moving: boolean,
-  width: number,
+  height: number,
 };
 
 class SplitPane extends React.Component {
@@ -39,20 +39,20 @@ class SplitPane extends React.Component {
     super(props);
     this.state = {
       moving: false,
-      width: props.initialWidth,
+      height: props.initialWidth,
     };
   }
 
-  onMove(x: number) {
+  onMove(x: number, y: number) {
     var node = ReactDOM.findDOMNode(this);
     this.setState({
-      width: (node.offsetLeft + node.offsetWidth) - x,
+      height: (node.offsetTop + node.offsetHeight) - y,
     });
   }
 
   render() {
     var rightStyle = assign({}, styles.rightPane, {
-      width: this.state.width,
+      height: this.state.height,
     });
     return (
       <div style={styles.container}>
@@ -62,7 +62,7 @@ class SplitPane extends React.Component {
         <Draggable
           style={styles.dragger}
           onStart={() => this.setState({moving: true})}
-          onMove={x => this.onMove(x)}
+          onMove={(x, y) => this.onMove(x, y)}
           onStop={() => this.setState({moving: false})}>
           <div style={styles.draggerInner} />
         </Draggable>
@@ -77,13 +77,14 @@ class SplitPane extends React.Component {
 var styles = {
   container: {
     display: 'flex',
-    minWidth: 0,
+    minHeight: 0,
     flex: 1,
+    flexDirection: 'column',
   },
 
   dragger: {
-    padding: '0 3px',
-    cursor: 'ew-resize',
+    padding: '3px 0',
+    cursor: 'ns-resize',
     position: 'relative',
     zIndex: 1,
   },
@@ -91,18 +92,18 @@ var styles = {
   draggerInner: {
     backgroundColor: '#ccc',
     height: '100%',
-    width: 1,
+    height: 1,
   },
 
   rightPane: {
     display: 'flex',
-    marginLeft: -3,
+    marginTop: -3,
   },
 
   leftPane: {
     display: 'flex',
     marginRight: -3,
-    minWidth: 0,
+    minHeight: 0,
     flex: 1,
   },
 };
